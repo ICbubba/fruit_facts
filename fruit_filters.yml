@@ -2,6 +2,8 @@
 - name: Gather Fruit Facts
   hosts: localhost
   gather_facts: false
+  vars:
+    verify_ssl: true
 
   tasks:
   - name: Set API URL
@@ -14,6 +16,7 @@
       method: get
       status_code: [200, 202]
       ca_path: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+      validate_certs: "{{ verify_ssl | bool }}"
     register: all_fruits
 
   - name: New Filtered List of Fruits

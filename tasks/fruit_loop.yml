@@ -5,6 +5,7 @@
     url: "{{ fruit_api_url }}/fruit/{{ fruit_id }}"
     method: get
     ca_path: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+    validate_certs: "{{ verify_ssl | bool }}"
   register: fruit_response
 
 - name: "Appending Nutritional Facts for {{ fruit_name }}"
