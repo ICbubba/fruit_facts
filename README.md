@@ -15,8 +15,8 @@ An Ansible playbook whose purpose is to demonstrate both Ansible and REST API co
 
 ```
 Default: SSL Verification enabled
-ansible-playbook -vv fruity_facts.yml
+ansible-playbook -vv fruit_facts.yml
 
 To disable SSL Verification:
-ansible-playbook -vv fruity_facts.yml -e verify_ssl=false
+ansible-playbook -vv fruit_facts.yml -e verify_ssl=false
 ```
