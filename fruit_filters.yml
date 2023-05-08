@@ -1,0 +1,46 @@
+---
+- name: Gather Fruit Facts
+  hosts: localhost
+  gather_facts: false
+
+  tasks:
+  - name: Set API URL
+    ansible.builtin.set_fact:
+      fruit_api_url: https://www.fruityvice.com/api
+
+  - name: Pull List of Fruits
+    ansible.builtin.uri:
+      url: "{{ fruit_api_url }}/fruit/all"
+      method: get
+      status_code: [200, 202]
+      ca_path: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+    register: all_fruits
+
+  - name: New Filtered List of Fruits
+    ansible.builtin.set_fact:
+      filtered_fruit: "{{ all_fruits['json'] | fruit_filter(family='Rosaceae', genus='Fragaria') }}"
+
+  - name: Print Filtered Fruit List
+    ansible.builtin.debug:
+      msg: "Fruit Name: {{ fruit_name }} Fruit ID: {{ fruit_id }}"
+    loop: "{{ filtered_fruit }}"
+    loop_control:
+      loop_var: fruit
+    vars:
+      fruit_name: "{{ fruit['name'] }}"
+      fruit_id: "{{ fruit['id'] }}"
+
+  - name: Loop Over Fruit List
+    ansible.builtin.include_tasks:
+      file: tasks/fruit_loop.yml
+    loop: "{{ filtered_fruit }}"
+    loop_control:
+      loop_var: fruit
+    vars:
+      fruit_name: "{{ fruit['name'] }}"
+      fruit_id: "{{ fruit['id'] }}"
+
+  - name: Print Final Fruit Facts
+    ansible.builtin.debug:
+      msg: "{{ fruit_facts }}"
+    when: fruit_facts | length > 0

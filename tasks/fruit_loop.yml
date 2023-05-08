@@ -1,0 +1,15 @@
+---
+
+- name: "Look up Nutritional Facts For Fruit: {{ fruit_name }}"
+  ansible.builtin.uri:
+    url: "{{ fruit_api_url }}/fruit/{{ fruit_id }}"
+    method: get
+    ca_path: /etc/pki/ca-trust/extracted/pem/tls-ca-bundle.pem
+  register: fruit_response
+
+- name: "Appending Nutritional Facts for {{ fruit_name }}"
+  ansible.builtin.set_fact:
+    fruit_facts: "{{ fruit_facts | default([]) + [{'name': name, 'nutrition_facts': nutrition}] }}"
+  vars:
+    name: "{{ fruit_response['json']['name'] }}"
+    nutrition: "{{ fruit_response['json']['nutritions'] }}"
